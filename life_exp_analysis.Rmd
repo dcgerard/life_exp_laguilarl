@@ -22,33 +22,25 @@ We will try two full solutions
 library(tidyverse)
 library(gapminder)
 data(gapminder_unfiltered)
-head(gapminder_unfiltered)
-gapminder_unfiltered%>% 
-  group_by(year)%>%
-  summarize(maxlife = max(lifeExp, na.rm = TRUE)) -> cdf
-head(cdf)
-  
-semi_join(gapminder_unfiltered, cdf, by = c("lifeExp"= "maxlife", "year"))%>%
-  arrange(year)
-
 
 gapminder_unfiltered%>%
   group_by(year)%>%
   filter(lifeExp == max(lifeExp))%>%
   select(country, lifeExp, year)%>%
-  arrange(year) 
-#-> sumdat
+  arrange(year) -> sumdat
 
 head(sumdat)
-  
-
-
 ```
 
 We will now recreate the plot from Oeppen and Vaupel(2002).
 
 ```{r}
-
+sumdat %>%
+  ggplot(aes(x = year, 
+             y = lifeExp)) +
+  geom_point(aes(color = country)) +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_point(shape = 1)
 ```
 
 git status
